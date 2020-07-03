@@ -190,21 +190,18 @@ class AvroJsonSerializer(AvroJsonBase):
         if null:
             "null"
         else:
-            {"<type>": value}
+            value
         Then used one that matches to serialize `datum`
         :param schema: Avro schema for this union
         :param datum: Data to serialize
-        :return: dict {"type": value} or "null"
+        :return: value or "null"
         """
         for candidate_schema in schema.schemas:
             if validate(candidate_schema, datum):
                 if candidate_schema.type == "null":
                     return self._process_null()
                 else:
-                    field_type_name = self._union_name(candidate_schema)
-                    return {
-                        field_type_name: self._process_data(candidate_schema, datum)
-                    }
+                    self._process_data(candidate_schema, datum)
         raise AvroTypeException(schema, datum)
 
     def _serialize_record(self, schema, datum):
