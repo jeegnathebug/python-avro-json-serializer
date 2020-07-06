@@ -279,13 +279,13 @@ class AvroJsonDeserializer(AvroJsonBase):
         :param datum: Data to serialize
         :return: dict {"type": value} or "null"
         """
+        print(datum)
         for candidate_schema in schema.schemas:
             if self._validate_union(candidate_schema, datum):
                 if candidate_schema.type == "null":
                     return self._process_null()
                 else:
-                    field_type_name = self._union_name(candidate_schema)
-                    return self._process_data(candidate_schema, datum[field_type_name])
+                    return self._process_data(candidate_schema, datum)
         raise AvroTypeException(schema, datum)
 
     def _deserialize_record(self, schema, datum):
