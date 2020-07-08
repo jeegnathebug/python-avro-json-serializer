@@ -279,7 +279,6 @@ class AvroJsonDeserializer(AvroJsonBase):
         :param datum: Data to serialize
         :return: dict {"type": value} or "null"
         """
-        print(datum)
         for candidate_schema in schema.schemas:
             if self._validate_union(candidate_schema, datum):
                 if candidate_schema.type == "null":
@@ -343,25 +342,19 @@ class AvroJsonDeserializer(AvroJsonBase):
         if datum == self.UNSET:
             return False
 
-        wrapped_datum = datum
-        name = self._union_name(schema)
-        if datum and name in datum:
-            wrapped_datum = datum[name]
-        return self._validate(schema, wrapped_datum)
+        return self._validate(schema, datum)
 
     def from_dict(self, datum):
         """
         Deserialize an Avro dict that was deserialized by the json library.
-        :param schema: Avro schema of the `datum`
         :param datum: validated python dict object
         """
-        # asssume data has been deserialized already
+        # assume data has been deserialized already
         return self._process_data(self._avro_schema, datum)
 
     def from_json(self, datum):
         """
         Deserialize an Avro json string.
-        :param schema: Avro schema of the `datum`
         :param datum: string of serialized
         """
         # json library does the bulk of the work
